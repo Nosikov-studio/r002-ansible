@@ -39,7 +39,7 @@
         repo: git@github.com:Nosikov-studio/r001-lemp.git
         dest: /var/www/trur/
 #        key_file: /root/www/.ssh/id_ed25519
-        key_file: /root/www/.ssh/puttykey3
+        key_file: /root/.ssh/puttykey3
         accept_hostkey: yes
         force: yes  
        
