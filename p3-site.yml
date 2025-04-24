@@ -12,3 +12,4 @@
     - siteinstall
     - phpmyadmin
     - letsencrypt
+    - rsyncinstall
