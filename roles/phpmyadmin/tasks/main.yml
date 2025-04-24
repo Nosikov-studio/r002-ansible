@@ -1,0 +1,74 @@
+---
+# tasks file for phpmyadmin
+#--------------------------------------------------------- 10-1
+    - name: download  
+      get_url:
+        url: https://files.phpmyadmin.net/phpMyAdmin/5.2.2/phpMyAdmin-5.2.2-all-languages.zip
+        dest: /tmp/
+        mode: 0755
+#---------------------------------------------------------10-2
+    - name: Update apt cache and install unzip
+      apt:
+        name: unzip
+        update_cache: yes
+#---------------------------------------------------------10-3
+    - name: Unarchive a file that is already on the remote machine
+      ansible.builtin.unarchive:
+        src: /tmp/phpMyAdmin-5.2.2-all-languages.zip
+        dest: /tmp
+        remote_src: yes
+#---------------------------------------------------------10-4      
+    - name: Create a directory if it does not exist
+      file:
+        path: /var/www/html/phpmyadmin
+        state: directory
+        mode: 0777
+#---------------------------------------------------------10-5
+    - name: Copy files phpmyadmin
+      copy:
+        src: /tmp/phpMyAdmin-5.2.2-all-languages/.
+        dest: /var/www/html/phpmyadmin
+        remote_src: yes
+#---------------------------------------------------------10-6
+    - name: Copy config from sample
+      copy:
+        src: /var/www/html/phpmyadmin/config.sample.inc.php
+        dest: /var/www/html/phpmyadmin/config.inc.php
+        remote_src: yes
+#---------------------------------------------------------10-7      
+    - name: Change owner
+      file:
+        path: /var/www/html/
+        owner: www-data
+        group: www-data
+        recurse: yes
+#---------------------------------------------------------10-8
+    - name: replace line
+      lineinfile:
+        path: /var/www/html/phpmyadmin/config.inc.php
+        regexp: "\\$cfg\\['blowfish_secret'\\] = '';"
+        line: $cfg['blowfish_secret'] = '12345678910';
+
+    - name: Copy nginx config file
+      copy:
+        src: files/default2.conf
+        dest: /etc/nginx/sites-available/default
+        owner: root
+        group: root
+        mode: 0777
+
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: reloaded
+#---------------------------------------------------------10-9
+    - name: Copy config www.conf
+      copy:
+        src: files/www.conf
+        dest: /etc/php/8.1/fpm/pool.d/www.conf
+
+    - name: Reload php8.1-fpm
+      service:
+        name: php8.1-fpm
+        state: restarted
+#---------------------------------------------------------10-10

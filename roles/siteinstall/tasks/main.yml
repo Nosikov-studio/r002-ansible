@@ -1,0 +1,76 @@
+---
+# tasks file for siteinstall
+#---------------------------------------------------------9-1
+    - name: Recursively remove directory
+      file:
+        path: /var/www/trur/
+        state: absent
+
+    - name: Create a directory if it does not exist
+      file:
+        path: /var/www/trur
+        state: directory
+        mode: 0777
+
+#---------------------------------------------------------9-2 
+    - name: Installing git
+      package:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Copy key
+      copy:
+        src: /home/neo/.ssh/id_ed25519
+        dest: /root/.ssh/id_ed25519
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: Unconditionally reboot the machine with all defaults
+      ansible.builtin.reboot:
+  
+
+    - name: Copy files from github
+      git:
+        repo: git@github.com:nosikovevg/tphp.git
+        dest: /var/www/trur/
+        key_file: /root/www/.ssh/id_ed25519
+        accept_hostkey: yes
+        force: yes  
+       
+        recursive: yes
+        clone: yes
+        update: yes
+
+    - name: Recursively remove directory
+      file:
+        path: /var/www/trur/.git/
+        state: absent
+#---------------------------------------------------------9-3
+    - name: Copy socket config php8.1-fpm-tru.sock
+      copy:
+        src: files/tru.conf
+        dest: /etc/php/8.1/fpm/pool.d/tru.conf
+
+    - name: Reload php8.1-fpm
+      service:
+        name: php8.1-fpm
+        state: restarted
+#---------------------------------------------------------9-4
+    - name: Copy nginx config file for truruki
+      copy:
+        src: files/truruki
+        dest: /etc/nginx/sites-available/truruki
+        mode: 0777
+
+    - name: Link folder
+      file:
+        src: /etc/nginx/sites-available/truruki
+        dest: /etc/nginx/sites-enabled/truruki
+        state: link
+
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: reloaded

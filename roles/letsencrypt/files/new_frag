@@ -1,0 +1,17 @@
+server {
+listen 443 ssl;
+listen [::]:443 ssl;
+ssl_certificate /etc/letsencrypt/live/truruki.ru/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/truruki.ru/privkey.pem;
+server_name truruki.ru www.truruki.ru;
+root /var/www/trur;
+index index.php index.html index.htm index.nginx-debian.html;
+location / {
+          try_files $uri $uri/ =404;
+       }
+     location ~* \.php$ {
+       include snippets/fastcgi-php.conf;            
+       fastcgi_pass unix:/var/run/php/php8.1-fpm-tru.sock;
+        }
+}
+

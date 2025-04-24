@@ -1,0 +1,13 @@
+---
+- name: Test connection my server
+  become: yes
+  hosts: tru
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    - name: Ping my server
+      ping: 
+      
+

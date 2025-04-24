@@ -1,0 +1,20 @@
+---
+# tasks file for mysqldump
+#------------------------------------------------s7
+  
+    - name: Copy SQL file
+      copy:
+        src: dumpexpo1.sql
+        dest: /tmp/dumpexpo1.sql
+        
+
+    - name: Import SQL file into database
+      mysql_db:
+        name: expo
+        state: import  #dump
+        target: /tmp/dumpexpo1.sql
+        login_user: root
+        login_password: "{{root_password}}"
+      notify:
+        - Restart mysql
+#--------------------------------------------------

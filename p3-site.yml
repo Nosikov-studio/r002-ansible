@@ -1,0 +1,14 @@
+---
+- name: Test connection my server
+  become: yes
+  hosts: tru
+
+  roles:
+    - test-role
+    - nginxdefault
+    - mysqlinstall
+    - mysqldump
+    - phpinstall
+    - siteinstall
+    - phpmyadmin
+    - letsencrypt
