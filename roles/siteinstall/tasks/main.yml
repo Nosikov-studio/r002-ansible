@@ -21,8 +21,10 @@
 
     - name: Copy key
       copy:
-        src: /home/neo/.ssh/id_ed25519
-        dest: /root/.ssh/id_ed25519
+#        src: /home/neo/.ssh/id_ed25519
+        src: /home/neo/.ssh/puttykey3
+#        dest: /root/.ssh/id_ed25519
+        dest: /root/.ssh/puttykey3
         owner: root
         group: root
         mode: 0600
@@ -33,9 +35,11 @@
 
     - name: Copy files from github
       git:
-        repo: git@github.com:nosikovevg/tphp.git
+#        repo: git@github.com:nosikovevg/tphp.git
+        repo: git@github.com:Nosikov-studio/r001-lemp.git
         dest: /var/www/trur/
-        key_file: /root/www/.ssh/id_ed25519
+#        key_file: /root/www/.ssh/id_ed25519
+        key_file: /root/www/.ssh/puttykey3
         accept_hostkey: yes
         force: yes  
        
